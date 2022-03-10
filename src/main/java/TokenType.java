@@ -6,7 +6,10 @@ public enum TokenType {
     LT("<"),
     LE("<="),
     INT("int"),
-    IntLiteral("intNumber");
+    ASSIGNMENT("="),
+    IntLiteral("intNumber"),
+    PLUS("+"),
+    MULTIPLY("*");
 
     private String code;
 

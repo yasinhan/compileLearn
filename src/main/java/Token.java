@@ -4,7 +4,7 @@ public class Token {
 
     private String text = "";
 
-    public void append(char c) {
+    public void appendText(char c) {
         text = text + c;
     }
 

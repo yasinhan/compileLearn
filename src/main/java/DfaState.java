@@ -6,8 +6,12 @@ public enum DfaState {
     GE(">="),
     Int_1("intOrIdentifier"),
     Int_2("intOrIdentifier"),
+    Int_3("intOrIdentifier"),
+    Assignment("="),
     Int("int"),
-    IntLiteral("intNumber");
+    IntLiteral("intNumber"),
+    Plus("+"),
+    Multiply("*");
 
     private String code;
 

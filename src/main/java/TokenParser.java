@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Parser {
+public class TokenParser {
 
     private Token token;
 
@@ -14,6 +14,9 @@ public class Parser {
         for (int i = 1; i < seq.length(); i++) {
             state = parse(state, seq.charAt(i));
         }
+        if (token.getText().length() > 0) {
+            recognizedToken.add(token);
+        }
         return new ArrayList<>(recognizedToken);
     }
 
@@ -23,13 +26,16 @@ public class Parser {
             case Init:
             case GE:
             case Int:
+            case Assignment:
+            case Plus:
+            case Multiply:
                 newState = init(c);
                 break;
             case GT:
                 if (c == '=') {
                     newState = DfaState.GE;
                     token.type(TokenType.GE);
-                    token.append(c);
+                    token.appendText(c);
                 } else {
                     newState = init(c);
                 }
@@ -37,7 +43,7 @@ public class Parser {
             case ID:
                 if (isAlpha(c) || isDigit(c)) {
                     newState = DfaState.ID;
-                    token.append(c);
+                    token.appendText(c);
                 } else {
                     newState = init(c);
                 }
@@ -45,27 +51,37 @@ public class Parser {
             case Int_1:
                 if (c == 'n') {
                     newState = DfaState.Int_2;
-                    token.append(c);
+                    token.appendText(c);
                 } else {
                     newState = DfaState.ID;
-                    token.append(c);
+                    token.appendText(c);
                 }
                 break;
             case Int_2:
                 if (c == 't') {
-                    token.type(TokenType.IntLiteral);
-                    token.append(c);
-                    newState = DfaState.Int;
+                    token.appendText(c);
+                    newState = DfaState.Int_3;
                 } else if (isDigit(c) || isAlpha(c)) {
-                    token.append(c);
+                    token.appendText(c);
                     newState = DfaState.ID;
                 } else {
                     newState = init(c);
                 }
                 break;
+            case Int_3:
+                if (c == ' ') {
+                    token.type(TokenType.INT);
+                    token.appendText(c);
+                    newState = init(c);
+                } else {
+                    token.type(TokenType.ID);
+                    token.appendText(c);
+                    newState = DfaState.ID;
+                }
+                break;
             case IntLiteral:
                 if (isDigit(c)) {
-                    token.append(c);
+                    token.appendText(c);
                 } else {
                     newState = init(c);
                 }
@@ -84,7 +100,7 @@ public class Parser {
         if (isDigit(c)) {
             state = DfaState.IntLiteral;
             token.type(TokenType.IntLiteral);
-            token.append(c);
+            token.appendText(c);
         } else if (isAlpha(c)) {
             if (c == 'i') {
                 state = DfaState.Int_1;
@@ -92,11 +108,23 @@ public class Parser {
                 state = DfaState.ID;
             }
             token.type(TokenType.ID);
-            token.append(c);
+            token.appendText(c);
         } else if (c == '>') {
             state = DfaState.GT;
             token.type(TokenType.GT);
-            token.append(c);
+            token.appendText(c);
+        } else if (c == '=') {
+            state = DfaState.Assignment;
+            token.type(TokenType.ASSIGNMENT);
+            token.appendText(c);
+        } else if (c == '+') {
+            state = DfaState.Plus;
+            token.type(TokenType.PLUS);
+            token.appendText(c);
+        } else if (c == '*') {
+            state = DfaState.Multiply;
+            token.type(TokenType.MULTIPLY);
+            token.appendText(c);
         }
         return state;
 

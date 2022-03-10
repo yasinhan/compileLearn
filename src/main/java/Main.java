@@ -3,9 +3,9 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        Parser parser = new Parser();
-        String code = "int age = 5";
-        List<Token> tokens = parser.parseIntoToken(code);
+        TokenParser tokenParser = new TokenParser();
+        String code = "int intA = 2 * 3 + 5";
+        List<Token> tokens = tokenParser.parseIntoToken(code);
         for (Token token : tokens) {
             System.out.println(token);
         }
